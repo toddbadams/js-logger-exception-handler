@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('ipg.logging', ['ng'])
+    angular.module('ipg.logging', [])
         .config(config)
         .constant('loggingDebugEnabled', true)
 		.factory('loggingService', loggingService);

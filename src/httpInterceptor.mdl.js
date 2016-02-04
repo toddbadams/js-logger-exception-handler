@@ -1,42 +1,48 @@
 ﻿(function () {
     'use strict';
 
-    var UNAUTHORIZED_STATE = 'unauthorized',
-        FATAL_STATE = 'fatal',
-        TEMPLATE_FOLDER = 'src/templates';
-
     angular.module('ipg.httpErrorInterceptor', ['ui.router', 'timer'])
+        .constant('ipg.httpErrorInterceptor.config', {
+            unauthorizedRoute: {
+                name: 'unauthorized',
+                state: {
+                    url: '/unauthorized',
+                    templateUrl: '/src/templates/unauthorized.html',
+                    controller: Unauthorized,
+                    controllerAs: 'vm'
+                }
+            },
+            fatalErrordRoute: {
+                name: 'fatal',
+                state: {
+                    url: '/badthingshappen',
+                    templateUrl: '/src/templates/fatalerror.html',
+                    controller: Fatal,
+                    controllerAs: 'vm'
+                }
+            }
+        })
         .config(moduleConfig)
         .controller('unauthorized', Unauthorized)
         .controller('fatal', Fatal)
-		.factory('httpErrorInterceptor', Interceptor);
+        .factory('httpErrorInterceptor', Interceptor);
+
 
     /**
      * Module configuration
      */
-    moduleConfig.$inject = ['$stateProvider'];
-    function moduleConfig($stateProvider) {
-        $stateProvider
-                  .state(UNAUTHORIZED_STATE, {
-                      url: '/unauthorized',
-                      templateUrl: TEMPLATE_FOLDER + 'unauthorized.html',
-                      controller: Unauthorized,
-                      controllerAs: 'vm'
-            });
-        $stateProvider
-                  .state(FATAL_STATE, {
-                      url: '/badthingshappen',
-                      templateUrl: TEMPLATE_FOLDER + 'fatalerror.html',
-                      controller: Fatal,
-                      controllerAs: 'vm'
-                  });
+    moduleConfig.$inject = ['$stateProvider', '$httpProvider', 'ipg.httpErrorInterceptor.config'];
+    function moduleConfig($stateProvider, $httpProvider, config) {
+        $stateProvider.state(config.unauthorizedRoute.name, config.unauthorizedRoute.state);
+        $stateProvider.state(config.fatalErrordRoute.name, config.fatalErrordRoute.state);
+        $httpProvider.interceptors.push('httpErrorInterceptor');
     }
 
     /**
      * The HTTP Error Interception Service
      */
-    Interceptor.$inject = ['$state'];
-    function Interceptor($state) {
+    Interceptor.$inject = ['$location', 'ipg.httpErrorInterceptor.config'];
+    function Interceptor($location, config) {
 
         var publicApi = {
             responseError: responseError
@@ -65,31 +71,35 @@
 
         // Unauthorized - FATAL ERROR, goto unauthorized route
         function error401(response) {
-            $state.go(UNAUTHORIZED_STATE);
+            throw new httpException(response, config.unauthorizedRoute.state.url);
         }
 
         // Forbidden - FATAL ERROR, goto FatalError route
         //    We should never get here in production, this is developer bug.
         function error403(response) {
-            // todo:  get previous state by placing it as a param on this state
-            $state.go(FATAL_STATE);
+            throw new httpException(response, config.fatalErrordRoute.state.url);
         }
 
         // Not Found - FATAL ERROR, goto FatalError route
         //    We should never get here in production, this is developer bug.
         function error404(response) {
-            // todo:  get previous state by placing it as a param on this state
-            $state.go(FATAL_STATE);
+            throw new httpException(response, config.fatalErrordRoute.state.url);
         }
 
         // Server Error - FATAL ERROR, goto FatalError route
         //    We should never get here in production, this is developer bug.
         function error500(response) {
-            // todo:  get previous state by placing it as a param on this state
-            $state.go(FATAL_STATE);
+            throw new httpException(response, config.fatalErrordRoute.state.url);
         }
 
         return publicApi;
+    }
+
+    function httpException(response, url) {
+        this.message = response.status + ' ' + response.statusText;
+        this.data = response;
+        this.url = url;
+        this.name = 'httpException';
     }
 
     /**
@@ -98,12 +108,12 @@
     Unauthorized.$inject = ['$state'];
     function Unauthorized($state) {
         var vm = this;
-        
+
         function finished() {
             $state.go('login');
         }
 
-        (function() {
+        (function () {
             vm.finished = finished;
         })();
     }
@@ -113,14 +123,14 @@
      * Fatal Error user 
      */
     Fatal.$inject = ['$state'];
-    function Fatal() {
+    function Fatal($state) {
         var vm = this;
 
         function finished() {
             // todo: store time of fatal error into local storage
             // todo:  if error continues, go to another page "Nope can't continue" then logout
             // todo:  get previous state by placing it as a param on this state
-            $state.go('login');
+            $state.go('home');
         }
 
         (function () {

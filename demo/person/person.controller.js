@@ -1,21 +1,18 @@
 ﻿(function () {
     'use strict';
 
-    var TEMPLATE_BASE_URL = 'controllers/';
-
     angular.module('demo.person.controller', [
             'ui.router',
             'ipg.logging',
-            'demo.data',
-            's.person.directive'
+            'demo.person.data',
+            'demo.person.directive'
     ])
         .constant('demo.person.controller.config', {
             route: {
                 name: 'person',
                 state: {
                     url: '/person',
-                    templateUrl: TEMPLATE_BASE_URL + 'person.html',
-                    //template: '<p>hi</p>',
+                    templateUrl: 'controllers/person.html',
                     controller: PersonController,
                     controllerAs: "vm",
                     resolve:
@@ -42,7 +39,12 @@
      */
     PersonResolver.$inject = ['dataService'];
     function PersonResolver(personDataService) {
-        return personDataService.getPerson(1);
+        try {
+            return personDataService.getPerson(1);
+        } catch (ex) {
+            // throw fatal error
+            logger.error('updating', vm.ngModel, ex, true);
+        }
     }
 
     /**
