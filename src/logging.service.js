@@ -20,27 +20,40 @@
     loggingService.$inject = ['$log', 'loggingDebugEnabled'];
     function loggingService($log, debugEnabled) {
 
-        function log(method, message, data, source, isFatal) {
+        function error(message, data, source, exception, isFatal) {
             if (debugEnabled) {
                 // log to angular
-                $log[method]({
+                $log.error({
+                    message: message,
+                    data: data,
+                    source: source,
+                    excpetion: exception,
+                    isFatal: isFatal
+                });
+            } else {
+                // todo: Post to backend
+
+            }
+        }
+
+        function debug( message, data, source) {
+            if (debugEnabled) {
+                // log to angular
+                $log.debug({
                     message: message,
                     data: data,
                     source: source
                 });
-            } else {
-                // todo: Post to backend
-                
             }
         }
 
         function logger(source) {
             return {
                 debug: function (message, data) {
-                    return log('debug', message, data, source);
+                    return debug(message, data, source);
                 },
-                error: function (message, data, isFatal) {
-                    return log('error', message, data, source, isFatal);
+                error: function (message, data, exception, isFatal) {
+                    return error(message, data, source, exception, isFatal);
                 }
             };
         }

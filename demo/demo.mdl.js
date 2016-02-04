@@ -2,15 +2,17 @@
     'use strict';
 
     angular.module('demo', [
-        's.person.controller',
-        's.data',
-        's.person.directive',
-        'demo.backend',
-        'ipg.logging',
-        'ipg.httpErrorInterceptor'
+        'demo.person.controller'
+        //'s.person.directive' //,
+     //   'ipg.logging',
+     //   'ipg.httpErrorInterceptor'
     ])
     .value('ipgConfig', {
-        apiBasePath: 'http://localhost:8065'
-    });
+        apiBasePath: 'http://localhost:8065/api'
+    })
+    .run(function($state) {
+        window.state = $state;
+           // $state.go('person');
+        });
 
 })();

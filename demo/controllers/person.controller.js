@@ -1,21 +1,22 @@
 ﻿(function () {
     'use strict';
 
-    var TEMPLATE_BASE_URL = '/demo/controllers/';
+    var TEMPLATE_BASE_URL = 'controllers/';
 
-    angular.module('s.person.controller', [
+    angular.module('demo.person.controller', [
             'ui.router',
             'ipg.logging',
-            's.data'
-        ])
-        .constant('s.person.controller.config', {
+            'demo.data',
+            's.person.directive'
+    ])
+        .constant('demo.person.controller.config', {
             route: {
                 name: 'person',
                 state: {
                     url: '/person',
                     templateUrl: TEMPLATE_BASE_URL + 'person.html',
+                    //template: '<p>hi</p>',
                     controller: PersonController,
-                    //controller: 'sPerson',
                     controllerAs: "vm",
                     resolve:
                     {
@@ -25,14 +26,14 @@
             }
         })
         .config(moduleConfig)
-        .factory('s.person.controller.resolver', PersonResolver)
-        .controller('sPerson', PersonController);
+       .factory('demo.person.controller.resolver', PersonResolver)
+       .controller('Person', PersonController);
 
     /**
      * Person controller route configuration
      */
-    moduleConfig.$inject = ['$stateProvider', '$urlRouterProvider', 's.person.controller.config'];  
-    function moduleConfig($stateProvider, $urlRouterProvider, config) {  
+    moduleConfig.$inject = ['$stateProvider', 'demo.person.controller.config'];
+    function moduleConfig($stateProvider, config) {
         $stateProvider.state(config.route.name, config.route.state);
     }
 
@@ -50,11 +51,7 @@
     PersonController.$inject = ['loggingService', 'dataService', 'data'];
     function PersonController(loggingService, personDataService, personData) {
         var vm = this,
-            logger = loggingService.logger('person');
-        vm.save = save;
-        vm.isSaving = false;
-        vm.person = personData;
-        logger.debug('activated', vm.person);
+            logger = loggingService.logger('person Controller');
 
         function save() {
             vm.isSaving = true;
@@ -65,5 +62,13 @@
         function postSave() {
             vm.isSaving = false;
         }
+
+        // controller activation
+        (function () {
+            vm.save = save;
+            vm.isSaving = false;
+            vm.person = personData;
+            logger.debug('activated', vm.person);
+        })();
     }
 })();

@@ -1,5 +1,14 @@
-﻿<form>
-    <input type="text" ng-model="ngModel.first" placeholder="first" />
-    <input type="text" ng-model="ngModel.last" placeholder="last"/>
-    <p>{{ngModel.age(Date())}} years of age.</p>
+﻿<p>{{ngModel.full}}</p>
+<form>
+    <label>first</label>
+    <input type="text" ng-model="ngModel.first" placeholder="first" ng-blur="update()" />
+
+    <label>last</label>
+    <input type="text" ng-model="ngModel.last" placeholder="last" ng-blur="update()" />
+    <br/>
+    <label>Date of Birth (dd mm yyyy)</label>
+    <input type="text" ng-model="ngModel.day" placeholder="dd" ng-blur="update()" style="width: 25px;" />
+    <input type="text" ng-model="ngModel.month" placeholder="mm" ng-blur="update()" style="width: 25px;" />
+    <input type="text" ng-model="ngModel.year" placeholder="yyy" ng-blur="update()" style="width: 50px;" />
+    <p>{{ngModel.currentAge}} years of age.</p>
 </form>
