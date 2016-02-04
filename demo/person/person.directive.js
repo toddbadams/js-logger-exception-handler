@@ -12,7 +12,7 @@
             scope: {
                 ngModel: '='
             },
-            templateUrl: 'directives/person.html',
+            templateUrl: 'person/templates/person-edit.html',
             link: link
         };
 

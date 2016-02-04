@@ -18,8 +18,8 @@
         var logger = loggingService.logger('person Controller');
 
         // pass through in app files
-        $httpBackend.whenGET('controllers/person.html').passThrough();
-        $httpBackend.whenGET('directives/person.html').passThrough();
+        $httpBackend.whenGET('person/templates/person.html').passThrough();
+        $httpBackend.whenGET('person/templates/person-edit.html').passThrough();
         $httpBackend.whenGET('/src/templates/unauthorized.html').passThrough();
         $httpBackend.whenGET('/src/templates/fatalerror.html').passThrough();
 
@@ -31,7 +31,7 @@
                             data: data,
                             headers: headers
                         });
-                        return [401, {
+                        return [500, {
                             id: 1,
                             first: first,
                             last: last,
@@ -143,6 +143,8 @@
             this.name = 'PersonException';
             this.data = person;
         }
+        PersonException.prototype = new Error();
+        PersonException.prototype.constructor = PersonException;
 
         return p;
     })();

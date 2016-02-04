@@ -12,7 +12,7 @@
                 name: 'person',
                 state: {
                     url: '/person',
-                    templateUrl: 'controllers/person.html',
+                    templateUrl: 'person/templates/person.html',
                     controller: PersonController,
                     controllerAs: "vm",
                     resolve:
@@ -42,8 +42,10 @@
         try {
             return personDataService.getPerson(1);
         } catch (ex) {
-            // throw fatal error
-            logger.error('updating', vm.ngModel, ex, true);
+            // throw non fatal error
+            logger.error('updating', vm.ngModel, ex, false);
+            // create a new person
+            return personDataService.create();
         }
     }
 

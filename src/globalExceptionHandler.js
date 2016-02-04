@@ -14,7 +14,6 @@
             }
             logger.error('ERROR', null, ex, true);
             if (ex.url) {
-                var f = 12;
                 window.location = window.location.origin + window.location.pathname + '#' + ex.url;
             }
             
