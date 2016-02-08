@@ -95,12 +95,14 @@
         return publicApi;
     }
 
-    function httpException(response, url) {
+    var httpException = function (response, url) {
         this.message = response.status + ' ' + response.statusText;
         this.data = response;
         this.url = url;
         this.name = 'httpException';
     }
+    httpException.prototype = new Error();
+    httpException.prototype.constructor = httpException;
 
     /**
      * Unauthorized user 

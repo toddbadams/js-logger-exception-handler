@@ -4,9 +4,9 @@
     angular.module('ipg.globalExceptionHandler', ['ipg.logging'])
         .factory('$exceptionHandler', exceptionHandler);
 
-    exceptionHandler.$inject = ['loggingService', '$document'];
+    exceptionHandler.$inject = ['loggingService'];
 
-    function exceptionHandler(loggingService, $document) {
+    function exceptionHandler(loggingService) {
         var logger = loggingService.logger('global exception handler');
         return function(ex, cause) {
             if (cause) {

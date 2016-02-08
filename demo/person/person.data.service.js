@@ -31,7 +31,7 @@
                             data: data,
                             headers: headers
                         });
-                        return [500, {
+                        return [200, {
                             id: 1,
                             first: first,
                             last: last,
